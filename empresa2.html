@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Empresa de Desenvolvimento</title>
+  <style>
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #091222, #182f55, #0b282f, #000000);
+      background-size: 400% 400%;
+      animation: gradientAnimation 12s ease infinite;
+      color: white;
+      text-align: center;
+      padding: 20px;
+      margin: 0;
+    }
+
+    @keyframes gradientAnimation {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: auto;
+      background: rgba(255, 255, 255, 0.9);
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+      color: black;
+    }
+
+    .logo {
+      width: 150px;
+      margin: 20px auto;
+      display: block;
+    }
+
+    .header {
+      background: #0077b6;
+      color: white;
+      padding: 15px;
+      border-radius: 10px 10px 0 0;
+      text-transform: uppercase;
+      font-size: 22px;
+      font-weight: 600;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    th, td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+
+    th {
+      background: #0077b6;
+      color: white;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+
+    tr:nth-child(even) {
+      background: #f1f5f9;
+    }
+
+    tr:hover {
+      background: #e3e8ef;
+      transition: 0.3s;
+    }
+
+    input[type="text"], input[type="number"] {
+      width: 100%;
+      padding: 5px;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    input[type="number"]::-webkit-outer-spin-button,
+    input[type="number"]::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    input[type="number"] {
+      -moz-appearance: textfield;
+    }
+
+    .add-table-button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #0077b6;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+
+    .resultado-total {
+      font-weight: bold;
+      font-size: 18px;
+      margin-top: 10px;
+    }
+
+    .tabela-bloco {
+      border: 2px solid #0077b6;
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 30px;
+      position: relative;
+    }
+
+    .remove-table-button {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: #d62828;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      padding: 5px 10px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .rename-table-button {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: #f77f00;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      padding: 5px 10px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <img src="software.webp" class="logo" alt="Logomarca da Empresa" />
+
+  <div class="container">
+    <div class="header">Empresa de Desenvolvimento de Software</div>
+    <p><strong>Endereço:</strong> Rua das Startups, 123 - São Paulo, SP</p>
+
+    <h2>Tabelas Dinâmicas</h2>
+    <div id="tabelas-dinamicas"></div>
+
+    <button class="add-table-button" onclick="adicionarTabela()">➕ Adicionar Nova Tabela</button>
+  </div>
+
+  <script>
+    let contadorTabelas = 0;
+
+    function adicionarTabela() {
+      const idTabela = `tabela-${contadorTabelas}`;
+      const idResultado = `resultado-${contadorTabelas}`;
+      const idBloco = `bloco-${contadorTabelas}`;
+      const idTitulo = `titulo-${contadorTabelas}`;
+
+      const tabelaHtml = `
+        <div class="tabela-bloco" id="${idBloco}">
+          <button class="rename-table-button" onclick="renomearTabela('${idTitulo}')">✏️ Renomear Título</button>
+          <button class="remove-table-button" onclick="removerTabela('${idBloco}')">❌ Remover Tabela</button>
+          <h3 id="${idTitulo}">Tabela ${contadorTabelas + 1}</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>Item</th>
+                <th>Valor (R$)</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="${idTabela}"></tbody>
+          </table>
+          <button onclick="adicionarLinha('${idTabela}')" style="margin-bottom: 10px;">➕ Adicionar Linha</button>
+          <br>
+          <button class="add-table-button" onclick="calcularTotal('${idTabela}', '${idResultado}')">🧮 Calcular Total</button>
+          <div id="${idResultado}" class="resultado-total"></div>
+        </div>
+      `;
+
+      document.getElementById("tabelas-dinamicas").insertAdjacentHTML("beforeend", tabelaHtml);
+      adicionarLinha(idTabela);
+      contadorTabelas++;
+    }
+
+    function adicionarLinha(tabelaId) {
+      const linhaHtml = `
+        <tr>
+          <td><input type="text" placeholder="Nome do item" /></td>
+          <td><input type="number" placeholder="0.00" /></td>
+          <td><button onclick="this.closest('tr').remove()">❌</button></td>
+        </tr>
+      `;
+      document.getElementById(tabelaId).insertAdjacentHTML("beforeend", linhaHtml);
+    }
+
+    function calcularTotal(tabelaId, resultadoId) {
+      const linhas = document.querySelectorAll(`#${tabelaId} tr`);
+      let total = 0;
+
+      linhas.forEach(linha => {
+        const inputValor = linha.querySelector('td:nth-child(2) input');
+        const valor = parseFloat(inputValor?.value) || 0;
+        total += valor;
+      });
+
+      document.getElementById(resultadoId).innerText = `💰 Total: R$ ${total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+    }
+
+    function removerTabela(blocoId) {
+      const bloco = document.getElementById(blocoId);
+      if (bloco) bloco.remove();
+    }
+
+    function renomearTabela(tituloId) {
+      const novoNome = prompt("Digite o novo nome para a tabela:");
+      if (novoNome) {
+        document.getElementById(tituloId).innerText = novoNome;
+      }
+    }
+  </script>
+
+</body>
+</html>
